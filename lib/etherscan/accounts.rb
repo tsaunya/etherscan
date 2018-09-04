@@ -29,14 +29,14 @@ module Etherscan
     # @param offset max records to return
     def normal_transactions(address, args = {})
       action = 'txlist'
-      transcations(action, address, nil, args)
+      transactions(action, address, nil, args)
     end
 
     # Get a list of 'Internal' Transactions By Address
     # Available args: start_block, end_block, sort, page, offset
     def internal_transactions(address, args = {})
       action = 'txlistinternal'
-      transcations(action, address, nil, args)
+      transactions(action, address, nil, args)
     end
 
     # Get a list of "ERC20 - Token Transfer Events"
@@ -46,17 +46,25 @@ module Etherscan
     def token_transactions(contract_address, address = nil, args = {})
       fail Etherscan::Exception, 'contract or address must be defined' if (contract_address || address).nil?
       action = 'tokentx'
-      transcations(action, address, contract_address, args)
+      transactions(action, address, contract_address, args)
+    end
+
+    def mined_blocks(address, args = {})
+      fail Etherscan::Exception, 'address must be defined' if address.nil?
+      action = 'getminedblocks'
+      args[:blocktype] ||= 'blocks'
+      transactions(action, address, nil, args)
     end
 
     private
 
-    def transcations(action, address, contract_address, args)
+    def transactions(action, address, contract_address, args)
       params = {
         module: 'account', action: action,
         address: address, contractaddress: contract_address,
         startblock: args[:start_block], endblock: args[:end_block],
-        page: args[:page], offset: args[:offset], sort: args[:sort]
+        page: args[:page], offset: args[:offset], sort: args[:sort],
+        blocktype: args[:blocktype]
       }.select {|_, v| !v.nil? }
       get(params)
     end
