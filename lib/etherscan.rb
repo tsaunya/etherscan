@@ -3,6 +3,7 @@ require_relative 'etherscan/exceptions'
 require_relative 'etherscan/client'
 require_relative 'etherscan/accounts'
 require_relative 'etherscan/tokens'
+require_relative 'etherscan/proxy'
 require_relative 'etherscan/engine' if defined?(Rails)
 
 module Etherscan
